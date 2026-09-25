@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 from fastapi import FastAPI, Header, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
+from call_bridge import router as call_bridge_router
 
 
 class RoomRequest(BaseModel):
@@ -39,6 +40,7 @@ class Room:
 
 
 app = FastAPI(title="MACOL shared voice prototype")
+app.include_router(call_bridge_router)
 ROOMS: dict[str, Room] = {}
 ROOM_TTL_SECONDS = 3600
 MAX_ROOMS = 100
