@@ -56,6 +56,10 @@ def test_invalid_token_and_page(monkeypatch):
         page = client.get("/")
         assert page.status_code == 200
         assert "마컬" in page.text
+        assert "플랫폼 제휴문의" in page.text
+        assert "개인적인 통화" in page.text
+        assert client.get("/manifest.webmanifest").json()["display"] == "standalone"
+        assert client.get("/icon.svg").status_code == 200
         assert "no-store" in page.headers["cache-control"]
         room = client.post("/rooms", headers={"X-Owner-Key": "test-owner-key"}, json={
             "display_name": "예시", "introduction": "소개", "menu_titles": ["자료"],
