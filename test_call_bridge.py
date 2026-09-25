@@ -45,3 +45,17 @@ def test_bridge_rejects_unmatched_and_stale_events(monkeypatch):
         signature = hmac.new(b"s" * 48, raw, hashlib.sha256).hexdigest()
         assert client.post("/integrations/dial-events", content=raw,
                            headers={"x-macol-signature": signature}).status_code == expected
+
+
+def test_public_lookup_and_profile_are_read_only(monkeypatch):
+    monkeypatch.setenv("MACOL_RECEIVER_NUMBER", "01000000000")
+    monkeypatch.setenv("MACOL_PUBLIC_TEMPLATE_URL", "https://example.org/profile")
+    monkeypatch.setenv("MACOL_PROFILE_NAME", "<test>")
+    client = TestClient(app)
+    assert client.get("/public/templates/01000000001").status_code == 404
+    lookup = client.get("/public/templates/01000000000")
+    assert lookup.json()["template_url"] == "https://example.org/profile"
+    page = client.get("/profile")
+    assert page.status_code == 200
+    assert "&lt;test&gt;" in page.text
+    assert "<test>" not in page.text
