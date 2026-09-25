@@ -32,6 +32,8 @@ class Room:
     sockets: dict[str, WebSocket] = field(default_factory=dict)
     menu_index: int = 0
     revision: int = 0
+    call_requested: bool = False
+    call_approved: bool = False
     fields: dict[str, str] = field(default_factory=lambda: {"visitor_request": "", "owner_reply": ""})
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
 
@@ -143,6 +145,7 @@ async def room_socket(socket: WebSocket, room_id: str) -> None:
                 "introduction": room.introduction, "menus": room.menus,
                 "menu_index": room.menu_index, "revision": room.revision,
                 "fields": room.fields, "peer_present": len(room.sockets) == 2,
+                "call_requested": room.call_requested, "call_approved": room.call_approved,
             })
             peer = room.sockets.get("visitor" if role == "owner" else "owner")
             if peer:
@@ -184,7 +187,23 @@ async def room_socket(socket: WebSocket, room_id: str) -> None:
                     await send(socket, event)
                     if peer:
                         await send(peer, event)
-                elif kind in {"offer", "answer", "ice"} and peer:
+                elif kind == "request_call" and role == "visitor":
+                    if room.fields["visitor_request"].strip():
+                        room.call_requested = True
+                        event = {"type": "call_requested"}
+                        await send(socket, event)
+                        if peer:
+                            await send(peer, event)
+                elif kind == "decide_call" and role == "owner" and room.call_requested:
+                    approved = message.get("approved")
+                    if type(approved) is bool:
+                        room.call_approved = approved
+                        room.call_requested = False
+                        event = {"type": "call_decision", "approved": approved}
+                        await send(socket, event)
+                        if peer:
+                            await send(peer, event)
+                elif kind in {"offer", "answer", "ice"} and peer and room.call_approved:
                     value = message.get("value")
                     if isinstance(value, dict) and len(str(value)) < 12000:
                         await send(peer, {"type": kind, "value": value})
