@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Header, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 
@@ -72,6 +72,17 @@ def home() -> HTMLResponse:
             "X-Content-Type-Options": "nosniff",
         },
     )
+
+
+@app.get("/manifest.webmanifest")
+def manifest() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("manifest.webmanifest"),
+                        media_type="application/manifest+json")
+
+
+@app.get("/icon.svg")
+def icon() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("icon.svg"), media_type="image/svg+xml")
 
 
 @app.post("/rooms")
