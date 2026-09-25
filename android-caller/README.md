@@ -2,6 +2,8 @@
 
 Android Studio에서 이 폴더를 열고 Android SDK 35 및 JDK 17로 빌드합니다. 현재 작업 환경에는 Android SDK/Gradle/실기기가 없어 APK 빌드와 전화망 검사는 수행되지 않았습니다. `app/build.gradle`의 `API_BASE`를 시험용 HTTPS 마컬 서버 주소로 지정하고, 서버는 `MACOL_RECEIVER_NUMBER`와 `MACOL_PUBLIC_TEMPLATE_URL=https://<같은 서버 호스트>/profile`을 설정합니다. 실제 수신 번호는 소스에 쓰지 않습니다.
 
+GitHub Actions의 **Android caller pilot APK** 작업이 성공하면 해당 실행의 Artifacts에서 `macol-android-caller-debug`를 내려받을 수 있습니다. PR 브랜치에서 실행된 APK는 디버그 서명 시험판이며, 배포 서버에 최신 API가 반영되어야 조회가 됩니다. 파일을 임의로 재배포하거나 운영 앱으로 사용하지 않습니다.
+
 발신자 단말에 설치 → 앱 실행 → 통화 선별 역할 선택 → 알림 허용 → 연락처에 저장되지 않은 등록 번호로 발신 → 통화 중 알림 터치 → 프로필 확인. 일반 음성통화는 기존 전화 앱에서 처리됩니다. 통화 선별 역할은 사용자가 명시적으로 선택하고 다른 앱이 이미 차지할 수 있습니다. 연락처에 저장된 번호는 READ_CONTACTS 권한 없이 선별 콜백이 오지 않을 수 있습니다.
 
 이 시험 앱은 **자동 팝업이 아닙니다**. Android의 백그라운드 Activity 실행 제한에 따라 알림 터치를 사용합니다. 앱 설치 없는 임의의 발신자 또는 iPhone에는 표시되지 않습니다. 완전한 통화 중 자동 화면 UI는 기본 전화 앱(InCallService) 구현 및 역할 전환, 또는 검증된 단말/통신사 통합이 필요한 별도 범위입니다. 전화선은 가로채거나 끊지 않으며, 서버 오류 시 화면 알림만 생략합니다. 현재 `/profile`은 읽기 전용 메뉴 미리보기여서 클릭이 소유자 화면으로 동기화되지 않습니다.
