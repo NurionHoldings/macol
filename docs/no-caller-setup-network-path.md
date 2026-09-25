@@ -11,6 +11,17 @@
 
 ## 통신사·단말사 기술 실증 요청 계약
 
+### 자사 솔루션 개발 경로: MACOL Native Calling Gateway
+
+마컬이 직접 소유할 자산은 번호 등록·템플릿 저장·사업자 인증·통화별 화면 세션·메뉴 이벤트·감사 로그·단말 기능 협상이다. 망 사업자/단말 OEM이 제공할 자산은 기본 전화 앱의 통화 이벤트와 통화 중 UI 실행 권한이다. 독립 사업자로서 게이트웨이를 운영하되 기본 전화 앱 권한을 API 호출만으로 새로 얻을 수는 없다.
+
+1. **통신망 PoC:** GSMA NG.134(IMS Data Channel), TS.66(JavaScript 기반 IMS Data Channel API) 적용 가능 여부를 통신사 기술팀과 확인한다. 사업자가 통화 중 데이터 채널을 기본 전화 UI의 WebView/미니 앱에 연결할 수 있는지 두 실제 기기에서 확인한다. 음성 채널은 정상 유지한다.
+2. **단말 PoC:** 두 발신 기기를 새로 설정하지 않은 상태에서 등록 010 번호로 발신한다. 통신사에서 native UI 실행이 가능하다면 마컬의 수신자 템플릿을 통화 화면에 표시한다. 테스트 앱을 설치해 성공시키는 증거는 인정하지 않는다.
+3. **교차망 PoC:** 발신·수신 통신사 조합을 바꿔 단말·망별 자동 표시율을 기록한다. 한 조합이라도 미지원이면 그 범위에서 `무조건` 조건 FAIL이며, 시장 전체에 대한 무조건 표시를 주장하지 않는다.
+4. **서비스 PoC:** 통화 세션 만료, 영상/음성만 지원하는 단말, 와이파이 통화, 데이터 끊김, 다른 사업자에 번호 이동한 경우의 이벤트 처리와 음성 지속을 시험한다.
+
+**사업자에게 요구할 최소 실증 자원:** 실통화 시험용 010 번호/테스트 SIM, native 통화 화면 확장 또는 IMS 데이터 채널 테스트 환경, 기종별 기능 매트릭스, 통화 이벤트/세션 인터페이스 규격, 번호 소유 확인·가입·탈퇴 규정, 계약·요금 제안. 해당 자료의 비공개 API나 한국 상용 지원 여부는 아직 확보되지 않았다.
+
 1. 수신자가 자신의 010 번호와 템플릿 URL 또는 서명된 템플릿 ID를 사업자에 등록한다. 번호 소유 증명과 해지/변경 절차를 확보한다.
 2. 발신자가 등록 번호로 일반 음성통화를 시작하면 사업자/기본 전화 UI가 통화 세션 ID, 등록 수신번호, 단말 기능 지원 여부를 마컬 연동 게이트웨이에 전달한다. 실번호/발신자 식별자는 최소화하고 사업자와 계약에 따른 보호를 적용한다.
 3. 게이트웨이가 등록 템플릿 버전과 당회 세션용 짧은 수명의 서명 토큰을 돌려준다. 토큰의 범위는 수신번호와 통화 세션으로 제한한다.
@@ -34,4 +45,6 @@
 - 텔라보스 WebVoice: https://www.telavos.com/docs/solutions/webvoice/
 - LG생활건강 도입 사례: https://telavos.com/blog/2022/01/04/lghnh/
 - GSMA 데이터 채널 사례: https://www.gsma.com/get-involved/gsma-foundry/gsma_resources/delivering-real-time-translation/
+- GSMA IMS 데이터 채널 규격 NG.134: https://www.gsma.com/newsroom/gsma_resources/ng-134-ims-data-channel-v3-0/
+- GSMA IMS 데이터 채널 JavaScript API TS.66: https://www.gsma.com/get-involved/working-groups/gsma_resources/ts-66-ims-data-channel-api-specification/
 - Android 백그라운드 화면 정책: https://developer.android.com/guide/components/activities/secure-bal
