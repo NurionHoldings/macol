@@ -17,6 +17,8 @@
 
 ### 010 발신 이벤트 연동 계약 (서버 어댑터 초안)
 
+안드로이드 발신자 시험 앱의 소스는 [`android-caller/`](android-caller/)에 있습니다. 설치 후 통화 선별 역할을 받은 단말이 `GET /public/templates/{called_number}`로 공개 주소를 조회하고 알림을 터치하면 `/profile` 읽기 전용 화면을 엽니다. 서버에 `MACOL_RECEIVER_NUMBER`, `MACOL_PUBLIC_TEMPLATE_URL=https://<현재 서버 호스트>/profile`을 설정해야 합니다. 현재 통화 중 **알림 터치 방식**이고 자동 화면 팝업이나 메뉴 동기화는 아닙니다. 앱 설치·권한·실기기 빌드 시험은 아직 이루어지지 않았습니다.
+
 `POST /integrations/dial-events`는 계약된 전화망 사업자 어댑터 또는 발신자에게 설치되어 통화 선별 역할을 받은 앱이 보낸 이벤트를 받습니다. 요청 원문에 대한 `HMAC-SHA256` 소문자 16진 서명을 `X-Macol-Signature`에 넣습니다. `MACOL_DIAL_EVENT_SECRET`(32자 이상), `MACOL_RECEIVER_NUMBER`, `MACOL_PUBLIC_TEMPLATE_URL`(HTTPS)을 서버에 별도로 설정해야 활성화됩니다. 발신자 번호는 받거나 저장하지 않습니다.
 
 ```json
