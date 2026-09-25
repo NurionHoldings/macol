@@ -5,8 +5,8 @@ import hmac
 import os
 import re
 import time
-from urllib.parse import urlsplit
 from html import escape
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
