@@ -18,3 +18,20 @@ jobs:
           node-version: '22'
       - run: python -c "from pathlib import Path; s=Path('index.html').read_text(); Path('/tmp/macol-ui.js').write_text(s.split('<script>')[1].split('</script>')[0])"
       - run: node --check /tmp/macol-ui.js
+  container-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the production image
+        run: docker build --tag macol:ci .
+      - name: Start the image and check health
+        run: |
+          docker run -d --name macol-smoke -p 127.0.0.1:18000:8000 macol:ci
+          trap 'docker logs macol-smoke; docker rm -f macol-smoke' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:18000/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
