@@ -15,6 +15,8 @@
 
 ## 통화 연결 경로와 현재 한계
 
+**필수 제품 기준:** 발신자가 사전에 앱 설치·권한 허용·가입을 하지 않고 기존 전화 앱으로 일반 010 발신하면, 음성통화 중 템플릿이 자동으로 열려야 합니다. 알림 터치나 문자 링크 선택은 이 기준을 통과하지 않습니다. 현재 상태는 `NETWORK_INTEGRATION_BLOCKED`입니다. [통신망·기본 통화 화면 실증 계약](docs/no-caller-setup-network-path.md)을 참고합니다. `android-caller/` APK는 제품 흐름에 해당하지 않는 내부 기술 시험 장치입니다.
+
 ### 010 발신 이벤트 연동 계약 (서버 어댑터 초안)
 
 안드로이드 발신자 시험 앱의 소스는 [`android-caller/`](android-caller/)에 있습니다. 설치 후 통화 선별 역할을 받은 단말이 `GET /public/templates/{called_number}`로 공개 주소를 조회하고 알림을 터치하면 `/profile` 읽기 전용 화면을 엽니다. 서버에 `MACOL_RECEIVER_NUMBER`, `MACOL_PUBLIC_TEMPLATE_URL=https://<현재 서버 호스트>/profile`을 설정해야 합니다. 현재 통화 중 **알림 터치 방식**이고 자동 화면 팝업이나 메뉴 동기화는 아닙니다. 앱 설치·권한·실기기 빌드 시험은 아직 이루어지지 않았습니다.
