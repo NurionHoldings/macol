@@ -1,0 +1,16 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.nurion.macol.caller'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.nurion.macol.caller'
+        minSdk 29
+        targetSdk 35
+        versionCode 1
+        versionName '0.1-pilot'
+        buildConfigField 'String', 'API_BASE', '"https://macol-production.up.railway.app"'
+    }
+    buildFeatures { buildConfig true }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
