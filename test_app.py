@@ -32,6 +32,18 @@ def test_owner_gate_and_two_party_menu_and_role_bound_fields(monkeypatch):
                                    "value": "소개서를 원합니다", "revision": 1})
                 assert visitor.receive_json()["type"] == "field"
                 assert owner.receive_json()["value"] == "소개서를 원합니다"
+                visitor.send_json({"type": "offer", "value": {"sdp": "early"}})
+                assert not room.call_approved
+                visitor.send_json({"type": "request_call"})
+                assert visitor.receive_json()["type"] == "call_requested"
+                assert owner.receive_json()["type"] == "call_requested"
+                visitor.send_json({"type": "decide_call", "approved": True})
+                assert not room.call_approved
+                owner.send_json({"type": "decide_call", "approved": True})
+                assert owner.receive_json() == {"type": "call_decision", "approved": True}
+                assert visitor.receive_json() == {"type": "call_decision", "approved": True}
+                visitor.send_json({"type": "offer", "value": {"sdp": "approved"}})
+                assert owner.receive_json()["value"]["sdp"] == "approved"
                 owner.send_json({"type": "field", "key": "owner_reply", "value": "오래된 값",
                                  "revision": 1})
                 assert owner.receive_json()["type"] == "conflict"
